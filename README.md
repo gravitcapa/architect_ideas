@@ -144,12 +144,16 @@ AWS SNS
 
 All data must be compressed using GZIP, it reduces storage cost 5 times
 
-- Root -> Settings
-- Root -> Clients 
-- Root -> Client -> Settings
-- Root -> Client -> Data -> Object ID -> data.json 
-- Root -> Client -> Data -> Object ID -> search_index.json
-- Root -> Client -> Data -> Object ID -> state_machine.json
+  Root
+  ├── Settings
+  ├── Clients
+      ├── Client
+          ├── Settings
+          ├── Data
+              ├── Object ID
+                  ├── data.json
+                  ├── search_index.json
+                  ├── state_machine.json
 
 Directory buckets offers single digits ms access performance
 
