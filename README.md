@@ -1,254 +1,263 @@
 # Programming Languages / Environments
 
-## Main Idea: Serverless Platform
+Main idea is serverless platform
 
-- **Front-end**:
-  - Node.js, React, Bootstrap, and Templates
-  - AWS S3 for static website hosting
-- **Back-end**:
-  - Python or .NET 8
-  - AWS S3 Blob Storage for object hosting
-  - AWS Lambda for serverless computation
-  - AWS SNS/SQS for messaging queues
-  - Optional: PostgreSQL RDS (only if necessary, as it is more expensive than S3 and requires scaling)
-- **Tools**:
-  - Visual Studio Code
+- Node.js/React/Bootstrap/Templates for the front-end
+- AWS S3 static website hosting
+- Python/.Net 8 for the back-end 
+- VS Code
+- AWS S3 Blob Storage
+- AWS Lambda
+- AWS SNS/SQS messaging Queue
+- worst case is a Postgress RDS, but this is more expensive then S3 and will require scaling up
 
----
+# Sandbox/prod
 
-## Sandbox/Prod Environments
+each environment must have separate account in AWS
+this is due to limits and naming convention in AWS
+and better to have separate billing per environment
+register each account using email Alias
 
-Each environment must use a separate AWS account for:
+- Sandbox: admin+sandbox@contoso.com
+- Prod: admin+prod@contoso.com
 
-1. **AWS Limits** and naming convention isolation
-2. **Billing separation**
+registrations goes to admin@contoso.com
 
-### Email Registration
 
-- Use email aliases for each account:
-  - Sandbox: `admin+sandbox@contoso.com`
-  - Prod: `admin+prod@contoso.com`
-- All registrations forward to: `admin@contoso.com`
+# Static Websites
 
----
+AWS S3 (General Purpose) can host static websites as files, 
+possible to host single page react apps on it
+- can contain only static content
+- easy to deploy from Git
 
-## Static Websites
+# Static Markdown site content
+Possible to make MD format reader and store static pages in the Git,
+deploy on Check In, Render MD format on the site using viewer
+this is good for documentation and APIs
+possible to make folder structure similar to Confluence 
 
-### Hosting
+# Website Structure
 
-- AWS Route 53 for the domain name 
-- **AWS S3 (General Purpose)** can host static websites, including single-page React apps.
-- Supports:
-  - Static content only
-  - Easy deployment from Git
+Use React single page websites linked together by landing URLs
 
-### Static Markdown Site Content
+## Landing page
 
-- Store site content in Markdown (`.md`) format in Git.
-- Deploy on Git check-in.
-- Render Markdown dynamically on the site using a viewer.
-- Suggested folder structure:
-  - Mimic Confluence-like hierarchy for documentation and APIs.
+Generic landing page, visible to Public
+Login
 
----
+- contoso.com
 
-## Website Structure
+## Admin App
 
-### React Single Page Websites
+Manages Settings and API keys, behind login
+Should be similar to Shopify
+Owner transfer
 
-- Link pages using React Router.
-- Utilize landing URLs for navigation.
+- admin.contoso.com
 
-### Pages
+## Back-end App
 
-#### Landing Page
+Has and icons URLs to Functional Apps landing pages, behind login
 
-- **Public-facing**:
-  - Accessible to all users.
-  - Includes login functionality.
-  - Example: `contoso.com`
 
-#### Admin App
+- backend.contoso.com
 
-- **Purpose**: Manage settings and API keys.
-- **Features**:
-  - Behind login
-  - Owner transfer functionality
-- **Example**: `admin.contoso.com`
+## Micro Back-end Apps
 
-#### Back-end App
+Represents single functionality, 
+for example product management, order management, inventory management
+with a cross link to each other
+Easy to fix, limited functionality
 
-- **Purpose**: Provide icons and URLs to list of available apps landing pages.
-- **Access**: Behind login
-- **Example**: `backend.contoso.com`
+- app1.contoso.com
+- app2.contoso.com
 
-#### Micro Back-end Apps
+## Landing Pages
 
-- Represent single functionality, such as:
-  - Product management
-  - Order management
-  - Inventory management
-- **Examples**:
-  - `app1.contoso.com`
-  - `app2.contoso.com`
+Using React Router land user on the specific page, 
+other Apps they can use redirect URLs
+May need to develop URL mapper, to prevent hardcoded URLs 
+In this case will be easy to replace micro-apps with V2
 
-### Landing Page Navigation
+- app1.contoso.com Root route
+- app1.contoso.com/Product Product page route etc.
 
-- Use React Router for specific routes, e.g.,:
-  - `app1.contoso.com/` (Root route)
-  - `app1.contoso.com/Product` (Product page route)
-- Optionally develop a URL mapper to prevent hardcoded routes, facilitating future upgrades.
+# Authorization
 
----
+## User Authorization
 
-## Authorization
+for website users, general landing page should have login/create account
+After the login, Login APIs produces the token
+Token should be stored on the client side
+Token can be used on other single page apps
+if token expires, APIs return 401
+Should be renew strategy implemented if client uses website, 
+it can be done via Renew APIs running in the background periodically
+If user IP address changes, login is required, all VPN clients work like this
 
-### User Authorization
+### Token structure
 
-#### Workflow
+- Encrypted by server using minimum AES 256 
+- account ID
+- Expiration date time
+- client IP
+- scope
 
-- General landing page:
-  - Supports login and account creation.
-  - Login APIs return a token stored on the client side.
-  - Token usage:
-    - Valid across all single-page apps.
-    - Expired tokens return `401` responses.
-    - Implement token renewal via background APIs.
-- If the user’s IP address changes, force re-login (similar to VPN client behavior).
+## API Authentication
 
-#### Token Structure
+Admin APP should be able to produce API keys
 
-- Encrypted using AES-256.
-- Includes:
-  - Account ID
-  - Expiration datetime
-  - Client IP
-  - Scope
+### API keys
 
-### API Authentication
+- Can be generated and Viewed one time only for the user
+- if compromised or lost, user should only be able to delete the key
+- Ideally Should not be stored on the Server side
+- Server Side Should be able to validate the signature produced by user key
 
-#### API Keys
+### Protocol
 
-- **Admin App**: Generate and manage API keys.
-- **Key Properties**:
-  - Viewable once upon generation.
-  - Lost or compromised keys must be deleted by users.
-  - Should not be stored on the server.
-- **Server Validation**: Validate signatures generated by user keys.
+- HMAC preferred, user generates the request and signs it using secret, server side validates the signature
+- Option 2: OAuth
 
-#### Protocols
+# Backend
 
-1. **Preferred**: HMAC
-   - User signs the request with their secret key.
-   - Server validates the signature.
-2. **Alternative**: OAuth
+## APIs
 
----
+AWS API Geteway
 
-## Back-end
+## Computation
 
-### APIs
+AWS Lambda, HTTP Trigger, CRON Trigger, Event Triggers
 
-- Use AWS API Gateway for managing endpoints.
+## Queue
 
-### Computation
+AWS SNS
 
-- AWS Lambda:
-  - HTTP triggers
-  - CRON triggers
-  - Event triggers
+## Storage
 
-### Queue
+- AWS S3 General Purpose Buckets: Website hosting
+- AWS S3 Directory Buckets: Object Storage
+- AWS S3 Table Buckets: Search
 
-- AWS SNS or SQS for messaging queues.
+### Object Storage Structure 
 
-### Storage
+All data must be compressed using GZIP, it reduces storage cost 5 times
 
-- **AWS S3**:
-  - General Purpose Buckets: Website hosting
-  - Directory Buckets: Object storage
-  - Table Buckets: Search data
+- Root -> Settings
+- Root -> Clients 
+- Root -> Client -> Settings
+- Root -> Client -> Data -> Object ID -> data.json 
+- Root -> Client -> Data -> Object ID -> search_index.json
+- Root -> Client -> Data -> Object ID -> state_machine.json
 
-#### Object Storage Structure
+Directory buckets offers single digits ms access performance
 
-- **Data Compression**: Use GZIP for storage cost reduction (up to 5x).
-- Directory layout:
-  ```
-  Root
-  ├── Settings
-  ├── Clients
-      ├── Client
-          ├── Settings
-          ├── Data
-              ├── Object ID
-                  ├── data.json
-                  ├── search_index.json
-                  ├── state_machine.json
-  ```
+### Object Absolute URLs
 
-#### Resource Locking
+70% of all transactions is Read transactions and 30% Updates,
+Application must be designed the way to avoid consume resources on Read operations
 
-- To handle simultaneous writes:
-  1. Create a temporary file (`temp.json`).
-     - If two processes simultaneously attempt to create the same resource, only one process will succeed in creating the temp file. The second process will receive an error indicating "operation is in progress."
-  2. Update the temp file with new data.
-  3. Archive the old file:
-     - Move `data.json` to `Archive/datetime_data.json`.
-  4. Rename `temp.json` to `data.json`.
-- Archive files should have retention policies (e.g., auto-delete after X days).
+All objects must have AWS S3 CDN Path to the fast access to the Data by object ID
 
----
+- Root -> Client -> Data -> Object ID -> data.json
 
-## IDs
+### Resource Locking
 
-### Format
+In case of the competition for the same resource, writing service must create temp file
 
-- **Date-time based unique IDs**:
-  - Example: `202412102352149999` (18 digits) → `2CBD4C3C8F4F` (12 digits in HEX)
+- Root -> Client -> Data -> Object ID -> object_temp.json 
 
-#### Benefits
+if 2 processes simultaneously tried to create same resource 
+only 1 will be able to create temp file, 
+second will get the error and should return operation in the progress error
 
-- Near-zero risk of duplication.
-- Encodes creation date.
-- Sequentially generated and readable.
+- create empty temp file temp.json (concurrent process cannot do it and will fail before processing)
+- update temp file temp.json with new object data
+- move/rename old file data.json to Archive folder  - Root -> Client -> Data -> Object ID -> Archive -> datetime_data.json
+- rename temp.json to the current data.json
+- Archive files should be removed after X days
+- this approach makes minimum downtime, only for renaming/moving files
+- version history in Archive folder for the audit
 
----
+# IDs
 
-## Client-Side Search
+all IDs should be unique and be able to be generated in the code
+ideal is the date time stamp integer converted to HEX
 
-### Search Index Preparation
+~~~
+24-12-10 23:52:14 9999ms -> 
+202412102352149999 (18 digits) -> 
+2CBD4C3C8F4F (12 digits)
+~~~
 
-- On object save:
-  1. Extract unique words from required fields.
-  2. Hash each word (e.g., MD5 or SHA1).
-- Example `search_index.json`:
-  ```
-  2aae6c35c94fcfb415dbe95f408b9ce91ee846ed: 7
-  addf120b430021c36c232c99ef8d926aea2acd6b: 3
-  ```
+- reduced (close to zero) risk of duplicate ID (if happens must be resolve via retry)
+- does not disclose the previous ID directly
+- clearly identifies object creation date
+- makes object IDs sequentially generated
+- readable
 
-### Global Index Builder
+# Client Side Search
 
-- Background task updates the global search index based on changes in `search_index.json` files.
-- Optimization:
-  - Remove hashes for common terms (e.g., AND, OR).
-  - Compress search data in GZIP batches (e.g., monthly).
+Explore ability for the client side search, based on local DB on the client Side
 
-### Search Index Batches
+## Search Index Prep
 
-- Load in reverse chronological order:
-  - `2024_search_index.json`
-  - `2023_search_index.json`
+On Object Save, Search index should be updated
 
-### Client Search
+get the list of unique words from required fields and HASH every word with short hashing algorithm MD5 SHA1
+IDs and other required data also should be HASHed
 
-- Update local search index in the background.
-- Perform searches locally using the updated index.
+### search_index.json
+contains hash and qty matched
 
-### Server-Side Search
+2aae6c35c94fcfb415dbe95f408b9ce91ee846ed 7
+addf120b430021c36c232c99ef8d926aea2acd6b 3
 
-- If local search is unavailable, query server-side APIs.
-- Server-side search can use SQL data tables supported by S3.
+## Search Index Object Data
 
----
+Object folder should contain search index file, generated based on requirements
 
+- Root -> Client -> Data -> Object ID -> search_index.json
+
+## Global Index Builder
+
+Background task, monitors changes in search_index.json files and updates the global search index files
+
+Hashes with a lot of matches can be removed, they usually indicates (AND, OR, THEN, IN)
+
+Optimizations can be applied
+
+Search data should be GZIPed in batches, for example month or year
+
+## Search index batches
+
+Load batches from CDN, latest first
+
+- 2024_search_index.json
+- 2023_search_index.json
+
+## Client App search
+
+Then the mini app starts it updates local search index in the background
+starting from the latest index file first
+Client searches in the local DB, 
+
+## Server Side Search
+if local search is not available, 
+should be called server side API for the search
+Server side API should load search index in the memory cache and search within
+Server side can also use unhashed search index files
+
+### S3 Data Tables
+
+S3 has support of SQL Data Tables, what can be used in the server side searches 
+or process automation, it can use SQL to access the data
+  
+
+
+
+
+
+
+   
