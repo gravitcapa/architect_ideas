@@ -217,10 +217,10 @@ IDs and other required data also should be HASHed
 ### search_index.json
 contains hash and qty matched
 
-'''
+```
 2aae6c35c94fcfb415dbe95f408b9ce91ee846ed 7
 addf120b430021c36c232c99ef8d926aea2acd6b 3
-'''
+```
 
 ## Search Index Object Data
 
