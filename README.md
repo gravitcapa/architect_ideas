@@ -205,7 +205,7 @@ ideal is the date time stamp integer converted to HEX
 
 # Client Side Search
 
-Explore ability for the client side search, based on local DB on the client Side
+Explore ability for the client side search, based on local DB on the client Side avoiding exposing client data
 
 ## Search Index Prep
 
