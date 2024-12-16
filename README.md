@@ -191,11 +191,11 @@ second will get the error and should return operation in the progress error
 all IDs should be unique and be able to be generated in the code
 ideal is the date time stamp integer converted to HEX
 
-~~~
+```
 24-12-10 23:52:14 9999ms -> 
 202412102352149999 (18 digits) -> 
 2CBD4C3C8F4F (12 digits)
-~~~
+```
 
 - reduced (close to zero) risk of duplicate ID (if happens must be resolve via retry)
 - does not disclose the previous ID directly
@@ -217,8 +217,10 @@ IDs and other required data also should be HASHed
 ### search_index.json
 contains hash and qty matched
 
+'''
 2aae6c35c94fcfb415dbe95f408b9ce91ee846ed 7
 addf120b430021c36c232c99ef8d926aea2acd6b 3
+'''
 
 ## Search Index Object Data
 
