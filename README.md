@@ -3,7 +3,7 @@
 Main idea is serverless platform
 
 - Node.js/React/Bootstrap/Templates for the front-end
-- AWS S3 static website hosting
+- AWS Amplify with AWS S3 static website hosting / AWS Lambda for APIs
 - Python/.Net 8 for the back-end 
 - VS Code
 - AWS S3 Blob Storage
@@ -26,10 +26,9 @@ registrations goes to admin@contoso.com
 
 # Static Websites
 
+AWS Amplify with AWS S3 static website hosting / AWS Lambda for APIs
 AWS S3 (General Purpose) can host static websites as files, 
 possible to host single page react apps on it
-- can contain only static content
-- easy to deploy from Git
 
 # Static Markdown site content
 Possible to make MD format reader and store static pages in the Git,
@@ -77,11 +76,18 @@ Easy to fix, limited functionality
 
 Using React Router land user on the specific page, 
 other Apps they can use redirect URLs
-May need to develop URL mapper, to prevent hardcoded URLs 
-In this case will be easy to replace micro-apps with V2
 
 - app1.contoso.com Root route
 - app1.contoso.com/Product Product page route etc.
+
+## Url Manager
+better develop URL mapper, to prevent hardcoded URLs 
+In this case will be easy to replace micro-apps with V2
+
+each app should contain the list of external URLs it has reference to
+to display content from other apps
+for example order page can have the reference to product page 
+and it should be easy to return from product bage back to specific order page provided in return url
 
 # Authorization
 
@@ -96,6 +102,14 @@ Should be renew strategy implemented if client uses website,
 it can be done via Renew APIs running in the background periodically
 If user IP address changes, login is required, all VPN clients work like this
 
+### User token destribution
+
+On external micro-apps urls token should be a part of the query string
+micro app can consume the token with longer expiration and use it to get the data via APIs 
+- token
+- return url
+- should clealy identifies expiration 
+
 ### Token structure
 
 - Encrypted by server using minimum AES 256 
@@ -103,6 +117,10 @@ If user IP address changes, login is required, all VPN clients work like this
 - Expiration date time
 - client IP
 - scope
+
+Unencrypted part should contain expiration date in UTC in HEX (12 simbols) as first part of the token before encrypted part
+
+expiration date in UTC in HEX + Encrypted Token
 
 ## API Authentication
 
